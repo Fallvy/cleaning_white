@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ремонт одежды и химчистка | Минск, Сморговский тракт 7</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.css">
     <style>
         :root {
             --bg-clay: #fcf9f5;
             --emerald: #059669;
             --emerald-dark: #047857;
-            --clay-card: rgba(255, 255, 255, 0.9);
+            --clay-card: rgba(255, 255, 255, 0.85);
             --clay-border: rgba(255, 255, 255, 1);
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --shadow-clay: 0 25px 50px -12px rgba(16, 185, 129, 0.12), 0 0 20px rgba(255, 255, 255, 0.8) inset;
+            --shadow-clay: 0 25px 50px -12px rgba(16, 185, 129, 0.15), 0 0 25px rgba(255, 255, 255, 0.9) inset;
         }
 
         * {
@@ -41,7 +41,7 @@
             position: relative;
         }
 
-        /* 3D Claymorphism Background Elements (вдохновлено референсом, но в цветах химчистки) */
+        /* Живой фон */
         .site-bg {
             position: fixed;
             top: 0;
@@ -50,39 +50,27 @@
             height: 100vh;
             z-index: -1;
             overflow: hidden;
-            background-color: var(--bg-clay);
+            background: linear-gradient(135deg, #fcf9f5 0%, #f4ede2 50%, #f7fcf9 100%);
         }
 
         .clay-blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(50px);
+            filter: blur(80px);
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.55;
             animation: floatBlob 20s ease-in-out infinite alternate;
         }
 
-        .blob-1 {
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.25), rgba(52, 211, 153, 0.05));
-            top: -100px;
-            right: -100px;
-        }
-
-        .blob-2 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.03));
-            bottom: 10%;
-            left: -150px;
-            animation-delay: -7s;
-        }
+        .blob-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(5, 150, 105, 0.3), rgba(52, 211, 153, 0.05)); top: -200px; right: -150px; }
+        .blob-2 { width: 650px; height: 650px; background: radial-gradient(circle, rgba(245, 158, 11, 0.22), rgba(251, 191, 36, 0.04)); bottom: -10%; left: -150px; animation-delay: -6s; }
+        .blob-3 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(14, 165, 233, 0.18), rgba(56, 189, 248, 0.03)); top: 35%; left: 25%; animation-delay: -12s; animation-duration: 25s; }
+        .blob-4 { width: 450px; height: 450px; background: radial-gradient(circle, rgba(16, 185, 129, 0.2), rgba(236, 72, 153, 0.02)); bottom: 10%; right: 10%; animation-delay: -8s; }
 
         @keyframes floatBlob {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, 40px) scale(1.08); }
-            100% { transform: translate(-25px, -30px) scale(0.95); }
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(50px, 60px) scale(1.15) rotate(8deg); }
+            100% { transform: translate(-40px, -50px) scale(0.9) rotate(-8deg); }
         }
 
         .container {
@@ -93,7 +81,6 @@
             z-index: 1;
         }
 
-        /* Эффект объемных пластилиновых карточек (Claymorphism) */
         .clay-box {
             background: var(--clay-card);
             backdrop-filter: blur(16px);
@@ -144,9 +131,7 @@
             letter-spacing: -0.5px;
         }
 
-        .logo span {
-            color: var(--emerald);
-        }
+        .logo span { color: var(--emerald); }
 
         .nav-links {
             display: flex;
@@ -162,9 +147,7 @@
             transition: color 0.3s ease;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--emerald);
-        }
+        .nav-links a:hover, .nav-links a.active { color: var(--emerald); }
 
         .phone {
             font-weight: 700;
@@ -178,17 +161,10 @@
             transition: background 0.3s;
         }
 
-        .phone:hover {
-            background: rgba(5, 150, 105, 0.15);
-        }
+        .phone:hover { background: rgba(5, 150, 105, 0.15); }
 
-        section {
-            padding: 90px 0;
-        }
-
-        .hero {
-            padding-top: 160px;
-        }
+        section { padding: 90px 0; }
+        .hero { padding-top: 160px; }
 
         .hero-grid {
             display: grid;
@@ -205,9 +181,7 @@
             letter-spacing: -1px;
         }
 
-        .hero h1 span {
-            color: var(--emerald);
-        }
+        .hero h1 span { color: var(--emerald); }
 
         .hero p {
             font-size: 1.15rem;
@@ -237,107 +211,62 @@
             background: var(--emerald-dark);
         }
 
-        /* 3D Композиция интерфейса справа в стиле референса */
-        .hero-3d-showcase {
+        /* НАСТОЯЩИЙ ИНТЕРАКТИВНЫЙ 3D КОНТЕЙНЕР (THREE.JS) */
+        .hero-3d-container {
             position: relative;
-            height: 420px;
+            height: 480px;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: grab;
         }
 
-        .main-clay-card {
+        .hero-3d-container:active {
+            cursor: grabbing;
+        }
+
+        #three-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(240,253,244,0.7));
-            border-radius: 36px;
-            border: 2px solid #ffffff;
-            box-shadow: 0 30px 60px -15px rgba(16, 185, 129, 0.2);
-            overflow: hidden;
+            outline: none;
         }
 
-        /* Плавающие 3D-элементы (плашки поверх экрана, как на вашем референсе) */
-        .floating-badge {
+        /* Плавающие сателлиты-бейджи вокруг 3D-сцены */
+        .holo-badge-1, .holo-badge-2 {
             position: absolute;
-            background: #ffffff;
-            padding: 14px 22px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            padding: 10px 18px;
             border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            border: 2px solid rgba(255,255,255,0.9);
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-main);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 1);
+            z-index: 10;
+            pointer-events: none;
             animation: floatBadge 4s ease-in-out infinite alternate;
         }
 
-        .badge-1 {
-            top: 25px;
-            right: -20px;
+        .holo-badge-1 {
+            top: 20px;
+            left: 10px;
             color: var(--emerald);
         }
 
-        .badge-2 {
+        .holo-badge-2 {
             bottom: 40px;
-            left: -20px;
+            right: 10px;
             animation-delay: -2s;
-            color: #d97706;
         }
 
         @keyframes floatBadge {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-10px) rotate(1deg); }
-        }
-
-        .mockup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .mockup-dots {
-            display: flex;
-            gap: 6px;
-        }
-
-        .mockup-dots span {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #cbd5e1;
-        }
-
-        .mockup-dots span:nth-child(1) { background: #f87171; }
-        .mockup-dots span:nth-child(2) { background: #fbbf24; }
-        .mockup-dots span:nth-child(3) { background: #34d399; }
-
-        .mockup-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .mockup-img-box {
-            height: 160px;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-        }
-
-        .mockup-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
         }
 
         .section-title {
@@ -378,9 +307,7 @@
             box-shadow: 0 30px 60px -15px rgba(16, 185, 129, 0.25);
         }
 
-        .bento-card.large {
-            grid-column: span 2;
-        }
+        .bento-card.large { grid-column: span 2; }
 
         .bento-card h3 {
             font-size: 1.6rem;
@@ -443,9 +370,7 @@
             pointer-events: none;
         }
 
-        .img-after {
-            z-index: 1;
-        }
+        .img-after { z-index: 1; }
 
         .img-before-container {
             position: absolute;
@@ -490,20 +415,9 @@
             box-shadow: 0 4px 12px rgba(5,150,105,0.4);
         }
 
-        .work-info {
-            padding: 28px;
-        }
-
-        .work-info h4 {
-            font-size: 1.25rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .work-info p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+        .work-info { padding: 28px; }
+        .work-info h4 { font-size: 1.25rem; margin-bottom: 8px; font-weight: 700; }
+        .work-info p { color: var(--text-muted); font-size: 0.95rem; }
 
         .process-grid {
             display: grid;
@@ -511,30 +425,10 @@
             gap: 30px;
         }
 
-        .process-step {
-            padding: 40px 30px;
-            border-radius: 32px;
-            position: relative;
-        }
-
-        .step-num {
-            font-size: 4rem;
-            font-weight: 800;
-            color: rgba(5, 150, 105, 0.15);
-            line-height: 1;
-            margin-bottom: 15px;
-        }
-
-        .process-step h3 {
-            font-size: 1.4rem;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .process-step p {
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
+        .process-step { padding: 40px 30px; border-radius: 32px; position: relative; }
+        .step-num { font-size: 4rem; font-weight: 800; color: rgba(5, 150, 105, 0.15); line-height: 1; margin-bottom: 15px; }
+        .process-step h3 { font-size: 1.4rem; margin-bottom: 12px; font-weight: 700; }
+        .process-step p { color: var(--text-muted); font-size: 1rem; }
 
         .reviews-grid {
             display: grid;
@@ -542,37 +436,11 @@
             gap: 30px;
         }
 
-        .review-card {
-            padding: 35px;
-            border-radius: 32px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .review-text {
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 1.05rem;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-
-        .review-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .author-name {
-            font-weight: 700;
-            font-size: 1.05rem;
-        }
-
-        .review-stars {
-            color: #f59e0b;
-            letter-spacing: 2px;
-        }
+        .review-card { padding: 35px; border-radius: 32px; display: flex; flex-direction: column; justify-content: space-between; }
+        .review-text { font-style: italic; color: var(--text-muted); font-size: 1.05rem; margin-bottom: 25px; line-height: 1.6; }
+        .review-footer { display: flex; justify-content: space-between; align-items: center; }
+        .author-name { font-weight: 700; font-size: 1.05rem; }
+        .review-stars { color: #f59e0b; letter-spacing: 2px; }
 
         footer {
             background: rgba(255, 255, 255, 0.8);
@@ -581,56 +449,15 @@
             padding: 80px 0 40px;
         }
 
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 50px;
-            margin-bottom: 50px;
-        }
-
-        .footer-info h3 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
-        .footer-info p {
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-
-        .footer-col h4 {
-            font-size: 1.15rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-            color: var(--emerald);
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-col ul li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-col ul li a:hover {
-            color: var(--emerald);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(226, 232, 240, 0.8);
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+        .footer-info h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; }
+        .footer-info p { color: var(--text-muted); margin-bottom: 10px; }
+        .footer-col h4 { font-size: 1.15rem; margin-bottom: 20px; font-weight: 700; color: var(--emerald); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .footer-col ul li a:hover { color: var(--emerald); }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(226, 232, 240, 0.8); color: var(--text-muted); font-size: 0.9rem; }
 
         @media (max-width: 968px) {
             .hero-grid { grid-template-columns: 1fr; text-align: center; }
@@ -641,13 +468,17 @@
             .hero h1 { font-size: 2.8rem; }
         }
     </style>
+    <!-- Подключаем Three.js для честного 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <!-- 3D Claymorphism Background -->
+    <!-- Живой фон -->
     <div class="site-bg">
         <div class="clay-blob blob-1"></div>
         <div class="clay-blob blob-2"></div>
+        <div class="clay-blob blob-3"></div>
+        <div class="clay-blob blob-4"></div>
     </div>
 
     <!-- Header -->
@@ -681,36 +512,11 @@
             </div>
             
             <div class="fade-up delay-1">
-                <div class="hero-3d-showcase">
-                    <div class="main-clay-card">
-                        <div class="mockup-header">
-                            <div class="mockup-dots">
-                                <span></span><span></span><span></span>
-                            </div>
-                            <span style="font-size: 0.8rem; font-weight: 700; color: var(--emerald);">PREMIUM CARE</span>
-                        </div>
-                        <div class="mockup-body">
-                            <div>
-                                <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Контроль качества</h3>
-                                <p style="font-size: 0.9rem; color: var(--text-muted);">Индивидуальный подбор средств для каждого изделия.</p>
-                            </div>
-                            <div class="mockup-img-box">
-                                <img src="image 289.png" alt="Пример чистки">
-                            </div>
-                        </div>
-                        <div style="background: rgba(5,150,105,0.08); padding: 12px 18px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 0.85rem; font-weight: 600;">Готовность заказа:</span>
-                            <strong style="color: var(--emerald); font-size: 0.9rem;">от 24 часов</strong>
-                        </div>
-                    </div>
-
-                    <!-- Плавающие объемные элементы интерфейса (как на референсе) -->
-                    <div class="floating-badge badge-1">
-                        ✨ Эффект 100%
-                    </div>
-                    <div class="floating-badge badge-2">
-                        🛡️ Гарантия
-                    </div>
+                <!-- НАСТОЯЩИЙ 3D КОНТЕЙНЕР БЕЗ ЛИШНЕГО ТЕКСТА -->
+                <div class="hero-3d-container" id="canvas-container">
+                    <canvas id="three-canvas"></canvas>
+                    <div class="holo-badge-1">100% контроль качества</div>
+                    <div class="holo-badge-2">ИИ оценка по фото</div>
                 </div>
             </div>
         </div>
@@ -941,11 +747,147 @@
             }, { threshold: 0.15 });
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
+            // --- THREE.JS 3D ИНТЕРАКТИВНАЯ СЦЕНА ---
+            const container = document.getElementById('canvas-container');
+            const canvas = document.getElementById('three-canvas');
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 6;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Свет
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            scene.add(ambientLight);
+
+            const pointLight1 = new THREE.PointLight(0x059669, 4, 50);
+            pointLight1.position.set(5, 5, 5);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0x34d399, 3, 50);
+            pointLight2.position.set(-5, -5, 2);
+            scene.add(pointLight2);
+
+            // Главный 3D объект: Икосаэдр/Кристалл
+            const geometry = new THREE.IcosahedronGeometry(1.6, 0);
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0x059669,
+                metalness: 0.1,
+                roughness: 0.15,
+                transmission: 0.6,
+                thickness: 1.2,
+                wireframe: false,
+                transparent: true,
+                opacity: 0.85
+            });
+            const crystal = new THREE.Mesh(geometry, material);
+            scene.add(crystal);
+
+            const wireGeometry = new THREE.IcosahedronGeometry(1.8, 1);
+            const wireMaterial = new THREE.MeshBasicMaterial({
+                color: 0x34d399,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.25
+            });
+            const wireCrystal = new THREE.Mesh(wireGeometry, wireMaterial);
+            scene.add(wireCrystal);
+
+            const particlesCount = 70;
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesPositions = new Float32Array(particlesCount * 3);
+
+            for(let i = 0; i < particlesCount * 3; i += 3) {
+                particlesPositions[i] = (Math.random() - 0.5) * 6;
+                particlesPositions[i+1] = (Math.random() - 0.5) * 6;
+                particlesPositions[i+2] = (Math.random() - 0.5) * 6;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
+            const particlesMaterial = new THREE.PointsMaterial({
+                color: 0x059669,
+                size: 0.05,
+                transparent: true,
+                opacity: 0.7
+            });
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particles);
+
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            let targetRotationX = 0;
+            let targetRotationY = 0;
+
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                targetRotationY += deltaX * 0.008;
+                targetRotationX += deltaY * 0.008;
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            container.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            });
+            window.addEventListener('touchend', () => { isDragging = false; });
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const deltaX = e.touches[0].clientX - previousMousePosition.x;
+                const deltaY = e.touches[0].clientY - previousMousePosition.y;
+
+                targetRotationY += deltaX * 0.008;
+                targetRotationX += deltaY * 0.008;
+
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            });
+
+            const clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+                const elapsedTime = clock.getElapsedTime();
+
+                if (!isDragging) {
+                    targetRotationY += 0.004;
+                    targetRotationX = Math.sin(elapsedTime * 0.5) * 0.2;
+                }
+
+                crystal.rotation.y += (targetRotationY - crystal.rotation.y) * 0.05;
+                crystal.rotation.x += (targetRotationX - crystal.rotation.x) * 0.05;
+
+                wireCrystal.rotation.y = -crystal.rotation.y * 0.8;
+                wireCrystal.rotation.x = -crystal.rotation.x * 0.8;
+
+                particles.rotation.y = elapsedTime * 0.05;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
             // Слайдеры До/После
             document.querySelectorAll('.comparison-wrapper').forEach(wrapper => {
                 const beforeContainer = wrapper.querySelector('.img-before-container');
                 const handle = wrapper.querySelector('.slider-handle');
-                let isDragging = false;
+                let isDraggingSlider = false;
                 const updateWrapperWidth = () => {
                     beforeContainer.style.setProperty('--wrapper-width', wrapper.getBoundingClientRect().width + 'px');
                 };
@@ -960,12 +902,12 @@
                     beforeContainer.style.width = percent + '%';
                     handle.style.left = percent + '%';
                 };
-                wrapper.addEventListener('mousedown', (e) => { isDragging = true; updateSlider(e.clientX); });
-                window.addEventListener('mouseup', () => { isDragging = false; });
-                window.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX); });
-                wrapper.addEventListener('touchstart', (e) => { isDragging = true; updateSlider(e.touches[0].clientX); });
-                window.addEventListener('touchend', () => { isDragging = false; });
-                window.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX); });
+                wrapper.addEventListener('mousedown', (e) => { isDraggingSlider = true; updateSlider(e.clientX); });
+                window.addEventListener('mouseup', () => { isDraggingSlider = false; });
+                window.addEventListener('mousemove', (e) => { if (isDraggingSlider) updateSlider(e.clientX); });
+                wrapper.addEventListener('touchstart', (e) => { isDraggingSlider = true; updateSlider(e.touches[0].clientX); });
+                window.addEventListener('touchend', () => { isDraggingSlider = false; });
+                window.addEventListener('touchmove', (e) => { if (isDraggingSlider) updateSlider(e.touches[0].clientX); });
             });
         });
     </script>
