@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прайс-лист и цены | Clean & Fix Минск</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.css">
+    <style>
+        :root {
+            --bg-clay: #fcf9f5;
+            --emerald: #059669;
+            --emerald-dark: #047857;
+            --clay-card: rgba(255, 255, 255, 0.9);
+            --clay-border: rgba(255, 255, 255, 1);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow-clay: 0 25px 50px -12px rgba(16, 185, 129, 0.12), 0 0 20px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html.lenis, html.lenis body { height: auto; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-clay); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; }
+
+        .site-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; background-color: var(--bg-clay);
+        }
+        .clay-blob {
+            position: absolute; border-radius: 50%; filter: blur(50px); z-index: -1; opacity: 0.5;
+            width: 550px; height: 550px; background: radial-gradient(circle, rgba(16, 185, 129, 0.22), rgba(52, 211, 153, 0.05)); top: -100px; left: -100px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        .clay-box { background: var(--clay-card); backdrop-filter: blur(16px); border: 2px solid var(--clay-border); border-radius: 32px; box-shadow: var(--shadow-clay); }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(252, 249, 245, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.6); padding: 16px 0;
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--text-main); text-decoration: none; }
+        .logo span { color: var(--emerald); }
+        .back-link { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: color 0.3s; }
+        .back-link:hover { color: var(--emerald); }
+
+        .prices-page { padding-top: 140px; padding-bottom: 90px; }
+        .section-title { font-size: 3rem; font-weight: 800; text-align: center; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.15rem; margin-bottom: 40px; }
+
+        .price-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+        .tab-btn {
+            background: var(--clay-card); border: 2px solid var(--clay-border); color: var(--text-muted); padding: 12px 26px; border-radius: 30px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        }
+        .tab-btn:hover, .tab-btn.active { background: rgba(5, 150, 105, 0.1); border-color: var(--emerald); color: var(--emerald); box-shadow: 0 10px 25px rgba(5, 150, 105, 0.2); }
+
+        .price-category-section { margin-bottom: 50px; display: none; }
+        .price-category-section.active-section { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .category-heading { font-size: 1.8rem; font-weight: 700; margin-bottom: 25px; color: var(--emerald); }
+        .price-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .price-item { padding: 25px 30px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; }
+        .price-item:hover { transform: translateY(-4px); border-color: rgba(5, 150, 105, 0.4); box-shadow: 0 20px 35px -10px rgba(16, 185, 129, 0.2); }
+
+        .item-info h4 { font-size: 1.15rem; font-weight: 700; margin-bottom: 5px; }
+        .item-info p { color: var(--text-muted); font-size: 0.85rem; }
+        .item-price { font-size: 1.25rem; font-weight: 800; color: var(--emerald); background: rgba(5, 150, 105, 0.08); padding: 8px 16px; border-radius: 14px; border: 1px solid rgba(5, 150, 105, 0.2); white-space: nowrap; }
+
+        .price-cta { margin-top: 60px; padding: 50px; text-align: center; background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240,253,244,0.8)); border: 2px solid rgba(5, 150, 105, 0.2); }
+        .price-cta h3 { font-size: 2rem; font-weight: 800; margin-bottom: 15px; }
+        .price-cta p { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; padding: 16px 32px; background: var(--emerald); color: #ffffff; text-decoration: none; border-radius: 18px; font-weight: 700; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(5, 150, 105, 0.4); background: var(--emerald-dark); }
+
+        footer { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-top: 1px solid rgba(226, 232, 240, 0.8); padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+        @media (max-width: 768px) { .price-grid { grid-template-columns: 1fr; } .section-title { font-size: 2.2rem; } .price-cta { padding: 30px 20px; } }
+    </style>
+</head>
+<body>
+
+    <div class="site-bg"><div class="clay-blob"></div></div>
+
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">Clean<span>&</span>Fix</a>
+            <a href="index.html" class="back-link">← На главную</a>
+        </div>
+    </header>
+
+    <main class="prices-page">
+        <div class="container">
+            <h2 class="section-title">Прайс-лист услуг</h2>
+            <p class="section-subtitle">Прозрачные цены на химчистку, сложный ремонт и реставрацию одежды в Минске</p>
+            
+            <div class="price-tabs">
+                <button class="tab-btn active" data-target="all">Все услуги</button>
+                <button class="tab-btn" data-target="cleaning">Химчистка</button>
+                <button class="tab-btn" data-target="repair">Ремонт одежды</button>
+                <button class="tab-btn" data-target="restoration">Реставрация и кожа</button>
+            </div>
+
+            <div class="price-category-section active-section" data-category="cleaning">
+                <h3 class="category-heading">✨ Химчистка и аквачистка</h3>
+                <div class="price-grid">
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Костюм деловой (двойка)</h4><p>Деликатная чистка, отпаривание</p></div>
+                        <div class="item-price">от 35 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Пиджак / Жакет</h4><p>Удаление локальных загрязнений</p></div>
+                        <div class="item-price">от 25 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Пальто / Плащ</h4><p>Глубокая очистка ткани и подкладки</p></div>
+                        <div class="item-price">от 45 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Пуховик / Зимняя куртка</h4><p>Специальная обработка пуха и пера</p></div>
+                        <div class="item-price">от 40 BYN</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-category-section active-section" data-category="repair">
+                <h3 class="category-heading">🧵 Ремонт и подгонка одежды</h3>
+                <div class="price-grid">
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Замена молнии (куртка / пуховик)</h4><p>Включая работу со сложными бортами</p></div>
+                        <div class="item-price">от 30 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Подгонка по фигуре (брюки / джинсы)</h4><p>Ушив по боковым или шаговым швам</p></div>
+                        <div class="item-price">от 22 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Подгонка пиджака / пальто</h4><p>Укорачивание рукавов, низа, ушив</p></div>
+                        <div class="item-price">от 35 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Штопка порывов / потертостей</h4><p>Незаметная реставрация нитями</p></div>
+                        <div class="item-price">от 15 BYN</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-category-section active-section" data-category="restoration">
+                <h3 class="category-heading">💎 Реставрация кожи и брендовых вещей</h3>
+                <div class="price-grid">
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Химчистка кожаной куртки</h4><p>Смягчение кожи и восстановление жирового слоя</p></div>
+                        <div class="item-price">от 60 BYN</div>
+                    </div>
+                    <div class="price-item clay-box">
+                        <div class="item-info"><h4>Восстановление цвета кожи</h4><p>Локальная или полная подкраска изделия</p></div>
+                        <div class="item-price">от 50 BYN</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-cta clay-box">
+                <h3>Не нашли нужную услугу или сложно оценить дефект?</h3>
+                <p>Приходите по адресу: <strong>г. Минск, Сморговский тракт, 7</strong> или воспользуйтесь онлайн-оценкой по фото.</p>
+                <a href="estimator.html" class="btn">🤖 Оценить стоимость по фото</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>📍 г. Минск, Сморговский тракт, 7 (цокольный этаж) • Телефон: +375 25 748-37-89</p>
+            <p style="margin-top: 10px;">&copy; 2026 Ремонт одежды и химчистка Clean&Fix. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const sections = document.querySelectorAll('.price-category-section');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const target = btn.getAttribute('data-target');
+                    sections.forEach(section => {
+                        if (target === 'all' || section.getAttribute('data-category') === target) {
+                            section.classList.add('active-section');
+                        } else {
+                            section.classList.remove('active-section');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

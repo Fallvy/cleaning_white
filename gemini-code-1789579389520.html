@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ-Оценка стоимости по фото | Clean & Fix Минск</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.css">
+    <style>
+        :root {
+            --bg-clay: #fcf9f5;
+            --emerald: #059669;
+            --emerald-dark: #047857;
+            --clay-card: rgba(255, 255, 255, 0.9);
+            --clay-border: rgba(255, 255, 255, 1);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow-clay: 0 25px 50px -12px rgba(16, 185, 129, 0.12), 0 0 20px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html.lenis, html.lenis body { height: auto; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-clay); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; }
+
+        .site-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; background-color: var(--bg-clay);
+        }
+        .clay-blob {
+            position: absolute; border-radius: 50%; filter: blur(50px); z-index: -1; opacity: 0.5;
+            width: 500px; height: 500px; background: radial-gradient(circle, rgba(16, 185, 129, 0.22), rgba(52, 211, 153, 0.05)); bottom: -50px; right: -50px;
+        }
+
+        .container { max-width: 850px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        .clay-box { background: var(--clay-card); backdrop-filter: blur(16px); border: 2px solid var(--clay-border); border-radius: 32px; box-shadow: var(--shadow-clay); }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(252, 249, 245, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.6); padding: 16px 0;
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--text-main); text-decoration: none; }
+        .logo span { color: var(--emerald); }
+        .back-link { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: color 0.3s; }
+        .back-link:hover { color: var(--emerald); }
+
+        .estimator-page { padding-top: 140px; padding-bottom: 90px; }
+        .section-title { font-size: 2.8rem; font-weight: 800; text-align: center; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; }
+
+        .estimator-card { padding: 45px; margin-bottom: 30px; }
+
+        .upload-dropzone {
+            border: 2px dashed rgba(5, 150, 105, 0.4); border-radius: 24px; padding: 40px 20px; text-align: center; background: rgba(255, 255, 255, 0.6); cursor: pointer; transition: all 0.3s ease; margin-bottom: 25px;
+        }
+        .upload-dropzone:hover { border-color: var(--emerald); background: rgba(5, 150, 105, 0.04); }
+        .upload-dropzone h4 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .upload-dropzone p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; }
+        .form-control {
+            width: 100%; padding: 14px 20px; background: rgba(255, 255, 255, 0.9); border: 2px solid var(--clay-border); border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-control:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15); }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 16px 32px; background: var(--emerald); color: #ffffff; text-decoration: none; border: none; border-radius: 18px; font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(5, 150, 105, 0.4); background: var(--emerald-dark); }
+
+        .result-box { display: none; margin-top: 30px; padding: 30px; border-radius: 20px; background: rgba(240, 253, 244, 0.95); border: 2px solid rgba(5, 150, 105, 0.3); }
+        .result-box h3 { color: var(--emerald); font-size: 1.4rem; margin-bottom: 12px; }
+
+        footer { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-top: 1px solid rgba(226, 232, 240, 0.8); padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+        @media (max-width: 768px) { .estimator-card { padding: 25px; } .section-title { font-size: 2.2rem; } }
+    </style>
+</head>
+<body>
+
+    <div class="site-bg"><div class="clay-blob"></div></div>
+
+    <header>
+        <div class="container header-content">
+            <a href="index.html" class="logo">Clean<span>&</span>Fix</a>
+            <a href="index.html" class="back-link">← На главную</a>
+        </div>
+    </header>
+
+    <main class="estimator-page">
+        <div class="container">
+            <h2 class="section-title">ИИ-Оценка стоимости по фото</h2>
+            <p class="section-subtitle">Загрузите фото повреждения или загрязнения — наш алгоритм и мастер мгновенно рассчитают стоимость</p>
+            
+            <div class="estimator-card clay-box">
+                <form id="estimatorForm">
+                    <div class="upload-dropzone" id="dropzone">
+                        <h4>📁 Перетащите фото сюда или нажмите для выбора</h4>
+                        <p>Поддерживаются форматы: JPG, PNG, HEIC (до 15 МБ)</p>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div id="file-name" style="margin-bottom: 20px; font-weight: 600; color: var(--emerald); text-align: center;"></div>
+
+                    <div class="form-group">
+                        <label for="serviceType">Что требуется с вещью?</label>
+                        <select id="serviceType" class="form-control">
+                            <option value="cleaning">Химчистка и удаление пятен</option>
+                            <option value="repair">Ремонт или подгонка по фигуре</option>
+                            <option value="restoration">Реставрация кожи, меха или бренда</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comment">Комментарий или пожелания (необязательно)</label>
+                        <textarea id="comment" class="form-control" placeholder="Например: посадить пальто по плечам или вывести пятно от кофе..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactInfo">Ваш телефон или мессенджер для связи</label>
+                        <input type="text" id="contactInfo" class="form-control" placeholder="+375 (XX) XXX-XX-XX или Telegram @username" required>
+                    </div>
+
+                    <button type="submit" class="btn">🚀 Рассчитать стоимость за 15 минут</button>
+                </form>
+
+                <div class="result-box" id="resultBox">
+                    <h3>✅ Фото успешно отправлено мастеру!</h3>
+                    <p>ИИ-анализ показал предварительную сложность работы. Мастер уже получил ваш запрос и свяжется с вами по указанным контактам в течение 10–15 минут.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>📍 г. Минск, Сморговский тракт, 7 (цокольный этаж) • Телефон: +375 25 748-37-89</p>
+            <p style="margin-top: 10px;">&copy; 2026 Ремонт одежды и химчистка Clean&Fix. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const fileNameDisplay = document.getElementById('file-name');
+            const form = document.getElementById('estimatorForm');
+            const resultBox = document.getElementById('resultBox');
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    fileNameDisplay.textContent = `Выбран файл: ${fileInput.files[0].name}`;
+                }
+            });
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                form.style.display = 'none';
+                resultBox.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
