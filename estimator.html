@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ-Оценка стоимости по фото | Clean & Fix Минск</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.css">
+    <style>
+        :root {
+            --bg-clay: #fcf9f5;
+            --emerald: #059669;
+            --emerald-dark: #047857;
+            --clay-card: rgba(255, 255, 255, 0.9);
+            --clay-border: rgba(255, 255, 255, 1);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --shadow-clay: 0 25px 50px -12px rgba(16, 185, 129, 0.12), 0 0 20px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html.lenis, html.lenis body { height: auto; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-clay); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; }
+
+        .site-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; background-color: var(--bg-clay);
+        }
+        .clay-blob {
+            position: absolute; border-radius: 50%; filter: blur(50px); z-index: -1; opacity: 0.5;
+            width: 500px; height: 500px; background: radial-gradient(circle, rgba(16, 185, 129, 0.22), rgba(52, 211, 153, 0.05)); bottom: -50px; right: -50px;
+        }
+
+        .container { max-width: 850px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        .clay-box { background: var(--clay-card); backdrop-filter: blur(16px); border: 2px solid var(--clay-border); border-radius: 32px; box-shadow: var(--shadow-clay); }
+
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(252, 249, 245, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.6); padding: 16px 0;
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--text-main); text-decoration: none; }
+        .logo span { color: var(--emerald); }
+        .back-link { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: color 0.3s; }
+        .back-link:hover { color: var(--emerald); }
+
+        .estimator-page { padding-top: 140px; padding-bottom: 90px; }
+        .section-title { font-size: 2.8rem; font-weight: 800; text-align: center; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .section-subtitle { text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; }
+
+        .estimator-card { padding: 45px; margin-bottom: 30px; }
+
+        .upload-dropzone {
+            border: 2px dashed rgba(5, 150, 105, 0.4); border-radius: 24px; padding: 40px 20px; text-align: center; background: rgba(255, 255, 255, 0.6); cursor: pointer; transition: all 0.3s ease; margin-bottom: 25px;
+        }
+        .upload-dropzone:hover { border-color: var(--emerald); background: rgba(5, 150, 105, 0.04); }
+        .upload-dropzone h4 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .upload-dropzone p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; }
+        .form-control {
+            width: 100%; padding: 14px 20px; background: rgba(255, 255, 255, 0.9); border: 2px solid var(--clay-border); border-radius: 16px; font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--text-main); outline: none; transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-control:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15); }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 16px 32px; background: var(--emerald); color: #ffffff; text-decoration: none; border: none; border-radius: 18px; font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s; box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(5, 150, 105, 0.4); background: var(--emerald-dark); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+        .error-message { color: #dc2626; font-size: 0.9rem; margin-top: -15px; margin-bottom: 20px; display: none; text-align: center; font-weight: 500; }
+
+        .result-box { display: none; margin-top: 20px; padding: 40px; border-radius: 20px; background: rgba(240, 253, 244, 0.95); border: 2px solid rgba(5, 150, 105, 0.3); }
+        .result-box h3 { color: var(--emerald); font-size: 1.6rem; margin-bottom: 20px; text-align: center; }
+        
+        .result-item { margin-bottom: 18px; }
+        .result-item strong { display: block; color: var(--emerald-dark); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .result-item span { font-size: 1.3rem; font-weight: 700; color: var(--text-main); }
+        .result-desc { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(5, 150, 105, 0.2); }
+        .result-desc p { font-size: 1rem; color: var(--text-main); line-height: 1.6; }
+        .result-disclaimer { margin-top: 25px; font-size: 0.85rem; color: var(--text-muted); text-align: center; }
+
+        .btn-outline { background: transparent; color: var(--emerald); border: 2px solid var(--emerald); box-shadow: none; margin-top: 20px; }
+        .btn-outline:hover:not(:disabled) { background: rgba(5, 150, 105, 0.05); color: var(--emerald-dark); border-color: var(--emerald-dark); box-shadow: none; }
+
+        footer { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-top: 1px solid rgba(226, 232, 240, 0.8); padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+        @media (max-width: 768px) { .estimator-card { padding: 25px; } .section-title { font-size: 2.2rem; } .result-box { padding: 25px; } }
+    </style>
+</head>
+<body>
+
+    <div class="site-bg"><div class="clay-blob"></div></div>
+
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">Clean<span>&</span>Fix</a>
+            <a href="#" class="back-link">← На главную</a>
+        </div>
+    </header>
+
+    <main class="estimator-page">
+        <div class="container">
+            <h2 class="section-title">ИИ-Оценка стоимости по фото</h2>
+            <p class="section-subtitle">Загрузите фото повреждения или загрязнения — наш алгоритм мгновенно рассчитает стоимость</p>
+            
+            <div class="estimator-card clay-box">
+                <form id="estimatorForm">
+                    <div class="upload-dropzone" id="dropzone">
+                        <h4>📁 Перетащите фото сюда или нажмите для выбора</h4>
+                        <p>Поддерживаются форматы: JPG, PNG, WEBP (до 15 МБ)</p>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div id="file-name" style="margin-bottom: 20px; font-weight: 600; color: var(--emerald); text-align: center;"></div>
+                    <div id="fileError" class="error-message">Пожалуйста, загрузите фотографию для оценки.</div>
+
+                    <div class="form-group">
+                        <label for="serviceType">Что требуется с вещью?</label>
+                        <select id="serviceType" class="form-control">
+                            <option value="Химчистка и удаление пятен">Химчистка и удаление пятен</option>
+                            <option value="Ремонт или подгонка по фигуре">Ремонт или подгонка по фигуре</option>
+                            <option value="Реставрация кожи, меха или бренда">Реставрация кожи, меха или бренда</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comment">Комментарий или пожелания (необязательно)</label>
+                        <textarea id="comment" class="form-control" placeholder="Например: посадить пальто по плечам или вывести пятно от кофе..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactInfo">Ваш телефон или мессенджер для связи</label>
+                        <input type="text" id="contactInfo" class="form-control" placeholder="+375 (XX) XXX-XX-XX или Telegram @username" required>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn">🚀 Рассчитать стоимость</button>
+                </form>
+
+                <div class="result-box" id="resultBox">
+                    <h3 id="resultHeader">✅ Расчет выполнен!</h3>
+                    <div id="resultContent">
+                        <!-- Dynamic content injected here -->
+                    </div>
+                    <button class="btn btn-outline" id="resetBtn">Оценить другую вещь</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>📍 г. Минск, Сморговский тракт, 7 (цокольный этаж) • Телефон: +375 25 748-37-89</p>
+            <p style="margin-top: 10px;">&copy; 2026 Ремонт одежды и химчистка Clean&Fix. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Smooth scrolling initialization
+            const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const fileNameDisplay = document.getElementById('file-name');
+            const fileError = document.getElementById('fileError');
+            const form = document.getElementById('estimatorForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const resultBox = document.getElementById('resultBox');
+            const resultContent = document.getElementById('resultContent');
+            const resetBtn = document.getElementById('resetBtn');
+
+            // File selection logic
+            dropzone.addEventListener('click', () => fileInput.click());
+            
+            // Drag and drop events
+            dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--emerald)'; });
+            dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor = 'rgba(5, 150, 105, 0.4)'; });
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.borderColor = 'rgba(5, 150, 105, 0.4)';
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    updateFileName();
+                }
+            });
+
+            fileInput.addEventListener('change', updateFileName);
+
+            function updateFileName() {
+                if (fileInput.files.length > 0) {
+                    fileNameDisplay.textContent = `Выбран файл: ${fileInput.files[0].name}`;
+                    fileError.style.display = 'none'; // Hide error if user selected a file
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            }
+
+            // Helper to convert file to Base64
+            const getBase64 = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (fileInput.files.length === 0) {
+                    fileError.style.display = 'block';
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const serviceType = document.getElementById('serviceType').value;
+                const comment = document.getElementById('comment').value;
+
+                // Set loading state
+                submitBtn.innerHTML = '⏳ ИИ анализирует фото...';
+                submitBtn.disabled = true;
+
+                try {
+                    const base64Data = await getBase64(file);
+                    
+                    // Prepare structured JSON request for Gemini
+                    const payload = {
+                        contents: [{
+                            role: "user",
+                            parts: [
+                                { text: `Действуй как профессиональный мастер по химчистке и ремонту одежды/обуви из Минска. Проанализируй фото повреждения/вещи. Категория услуги: "${serviceType}". Комментарий клиента: "${comment || 'Отсутствует'}". Оцени примерную стоимость работы (в белорусских рублях BYN) и сроки выполнения. Объясни, что нужно сделать. Верни ответ строго в формате JSON с ключами "cost", "time", "explanation".` },
+                                {
+                                    inlineData: {
+                                        mimeType: file.type || "image/jpeg",
+                                        data: base64Data
+                                    }
+                                }
+                            ]
+                        }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            responseSchema: {
+                                type: "OBJECT",
+                                properties: {
+                                    "cost": { "type": "STRING", "description": "Примерная стоимость (например, '40 - 60 BYN')" },
+                                    "time": { "type": "STRING", "description": "Ориентировочное время (например, '2-3 дня')" },
+                                    "explanation": { "type": "STRING", "description": "Краткое описание необходимых работ и причины такой стоимости" }
+                                },
+                                required: ["cost", "time", "explanation"]
+                            }
+                        }
+                    };
+
+                    const apiKey = "AQ.Ab8RN6K2HfHVSXrRLy1A5-atvgyb29mmgky_X5igvJYo_qyKiQ"; // API Key handled by Canvas environment dynamically
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.candidates && data.candidates.length > 0) {
+                        // Parse the guaranteed JSON text returned by the model
+                        const resultJson = JSON.parse(data.candidates[0].content.parts[0].text);
+                        
+                        // Populate results
+                        resultContent.innerHTML = `
+                            <div class="result-item">
+                                <strong>Ориентировочная стоимость:</strong>
+                                <span>${resultJson.cost}</span>
+                            </div>
+                            <div class="result-item">
+                                <strong>Сроки выполнения:</strong>
+                                <span>${resultJson.time}</span>
+                            </div>
+                            <div class="result-desc">
+                                <strong>Вердикт мастера:</strong>
+                                <p>${resultJson.explanation}</p>
+                            </div>
+                            <p class="result-disclaimer">* Указана предварительная оценка ИИ. Точная стоимость может быть определена мастером при живом осмотре вещи в ателье.</p>
+                        `;
+
+                        // Switch views
+                        form.style.display = 'none';
+                        resultBox.style.display = 'block';
+                    } else {
+                        throw new Error("Не удалось получить ответ от ИИ.");
+                    }
+
+                } catch (error) {
+                    console.error("API Error:", error);
+                    resultContent.innerHTML = `
+                        <div style="color: #dc2626; text-align: center; padding: 20px 0;">
+                            <strong>Произошла ошибка при анализе фото.</strong><br>
+                            Пожалуйста, попробуйте загрузить фото меньшего размера или повторите попытку позже.
+                        </div>
+                    `;
+                    form.style.display = 'none';
+                    resultBox.style.display = 'block';
+                } finally {
+                    // Reset button state
+                    submitBtn.innerHTML = '🚀 Рассчитать стоимость';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Reset form for a new estimation
+            resetBtn.addEventListener('click', () => {
+                form.reset();
+                fileInput.value = '';
+                fileNameDisplay.textContent = '';
+                resultBox.style.display = 'none';
+                form.style.display = 'block';
+                // Scroll back up to the top of the form smoothly
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
